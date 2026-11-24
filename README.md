@@ -44,6 +44,11 @@ Forka repot, kör `git clone`, öppna mappen i VS Code och starta Vite-servern p
 
 Öppna `tests.html` på servern (`http://localhost:5173/tests.html`). De flesta tester är röda. Läs `src/tests.ts` uppifrån: hur fungerar `falskFetch`? Varför ska vi testa med en falsk fetch istället för den riktiga? Skriv svaret i `docs/async-anteckningar.md` eller som kommentar.
 
+**Kommentar:** `falskFetch` tar emot data och statuskod (JSON-innehåll och HTTP-statuskod). Alla URL:r som anropas sparas i en tom array. Sedan skapas en falsk fetch-funktion (fn) som sparar varje anropad URL i arrayen. `ok` blir true om satuskoden är mellan 200 och 299. statuskoden returneras och json() returnerar datan som skickades in. Till sist kopplas arrayen till funktionen med fn.anrop = anrop, så att man kan komma åt och kontrollera vilka URL:er som har anropats via fn.anrop.
+
+**Varför falsk fetch?** - För att kunna testa koden under kontrollerade förhållanden. Inga riktiga nätanrop görs, så testerna är snabba och stabila. Vi är alltså inte beroende av internet eller ecterna servrar. Vi kan själva bestämma vilket svar som ska returneras, testa både lyckade anrop och felhantering samt kontrollera vilka URL:er som anropats.
+Kortfattat: det gör testerna snabbare, mer förutsägbara och enklare att felsöka!
+
 ### Steg 3. hamtaJson
 
 Skriv `hamtaJson(url, fetchFn)` i `src/api.ts`. Tre saker kan hända: nätet är nere (fetch kastar), servern svarar med fel (`ok` är `false`) eller allt går bra. Kom ihåg: `fetch` kastar inte fel för 404 eller 500, du måste själv kolla `svar.ok`. Kör testerna.
