@@ -10,7 +10,7 @@ import { hamtaMeny, hamtaVader } from "./api";
 import { laddaMeny, laddaData } from "./tillstand";
 import { visaTillstand, visaVader } from "./tillstand-ui";
 import { hamta } from "./dom";
-import type { Ratt, Filter, OrderRad, KlarMeny, FetchFn } from "./typer";
+import type { Ratt, Filter, OrderRad, KlarMeny, FetchFn, Tillstand, DataTillstand, Vader } from "./typer";
 
 // Sätt till true om väder-API:et inte fungerar (till exempel på skolans nät).
 const ANVAND_RESERVDATA = false;
@@ -52,7 +52,26 @@ function ritaMeny(): void {
 //   - vidForsokIgen: laddaMenyn själv (så att knappen "Försök igen" fungerar).
 //   - visaKlar: spara tillstand.ratter i variabeln meny, anropa ritaMeny() och uppdatera ordern med visaOrder.
 function laddaMenyn(): void {
+  const vidForsokIgen = () => {
+    laddaMenyn();
+  };
+
+  const visaKlar = (container: HTMLElement, tillstand: KlarMeny) => {
+    meny = tillstand.ratter;
+    ritaMeny();
+    visaOrder(orderRef, order, meny);
+  };
+
+  const vidTillstand = (tillstand: Tillstand) => {
+    visaTillstand(lista, tillstand, {
+      vidForsokIgen,
+      visaKlar
+    });
+  };
+  laddaMeny(() => hamtaMeny(), vidTillstand);
 }
+
+
 
 kopplaFilter(filterGrupp, (filter) => {
   aktivtFilter = filter;
@@ -86,10 +105,26 @@ const vaderFetch: FetchFn = ANVAND_RESERVDATA ? () => fetch("data/vader-stockhol
 //   I vidTillstand: visaTillstand(vaderResultat, tillstand, { vidForsokIgen: laddaVader, visaKlar }).
 //   visaKlar ska anropa visaVader(container, stad.namn, tillstand.data).
 function laddaVader(): void {
+  const stad = STADER[stadVal.value];
+  const visaKlar = (container: HTMLElement, tillstand: DataTillstand<Vader>) => {
+    if (tillstand.typ === "klar") {
+      visaVader(container, stad.namn, tillstand.data);
+    }
+  };
+  const vidTillstand = (tillstand: DataTillstand<Vader>) => {
+    visaTillstand(vaderResultat, tillstand, {
+      vidForsokIgen: laddaVader,
+      visaKlar
+    });
+  };
+  laddaData(() => hamtaVader(stad.lat, stad.lon, vaderFetch), vidTillstand);
 }
 
 // TODO 3: Lyssna på submit på vaderForm. Anropa preventDefault och sedan laddaVader().
-
+vaderForm.addEventListener("submit", (handelse) => {
+  handelse.preventDefault();
+  laddaVader();
+})
 // ---- Start ----
 visaOrder(orderRef, order, meny);
 laddaMenyn();

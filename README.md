@@ -79,7 +79,7 @@ Sätt `ANVAND_RESERVDATA = true` i `src/main.ts` och se att vädret fungerar uta
 
 ## Kontrollista: så vet du att du är klar
 
-- [ ] Alla tester på `tests.html` är gröna.
+- [X] Alla tester på `tests.html` är gröna.
 - [ ] `index.html` visar menyn hämtad från `data/meny.json` (tio rätter) och vädret för vald stad.
 - [ ] Du har sett alla tre tillstånden (laddar, fel, tomt) i webbläsaren med hjälp av DevTools.
 - [ ] Knappen *Försök igen* fungerar när du simulerat ett fel.
