@@ -80,12 +80,12 @@ Sätt `ANVAND_RESERVDATA = true` i `src/main.ts` och se att vädret fungerar uta
 ## Kontrollista: så vet du att du är klar
 
 - [X] Alla tester på `tests.html` är gröna.
-- [ ] `index.html` visar menyn hämtad från `data/meny.json` (tio rätter) och vädret för vald stad.
-- [ ] Du har sett alla tre tillstånden (laddar, fel, tomt) i webbläsaren med hjälp av DevTools.
-- [ ] Knappen *Försök igen* fungerar när du simulerat ett fel.
-- [ ] Du använder `textContent` och inte `innerHTML` i `src/tillstand-ui.ts`.
-- [ ] Du kan förklara varför `fetch` inte kastar fel för 404.
-- [ ] Du har gjort minst fem commits.
+- [X] `index.html` visar menyn hämtad från `data/meny.json` (tio rätter) och vädret för vald stad.
+- [X] Du har sett alla tre tillstånden (laddar, fel, tomt) i webbläsaren med hjälp av DevTools.
+- [X] Knappen *Försök igen* fungerar när du simulerat ett fel.
+- [X] Du använder `textContent` och inte `innerHTML` i `src/tillstand-ui.ts`.
+- [X] Du kan förklara varför `fetch` inte kastar fel för 404.
+- [X] Du har gjort minst fem commits.
 
 ## Tips om du fastnar
 
