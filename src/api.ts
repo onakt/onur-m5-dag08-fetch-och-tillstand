@@ -11,27 +11,28 @@ import type { Ratt, Vader, FetchFn } from "./typer";
 //    - Annars: returnera await svar.json().
 //    Tips: fetch kastar INTE fel för 404 eller 500. Du måste själv kolla svar.ok.
 export async function hamtaJson(url: string, fetchFn: FetchFn = fetch): Promise<unknown> {
-  let svar: Response;
+  let svar;
 
   try {
     svar = await fetchFn(url);
   } catch (fel) {
-      throw new Error("Kunde inte nå servern. Kontrollera din anslutning.");
+    throw new Error("Kunde inte nå servern. Kontrollera din anslutning.");
   }
-if (!svar.ok) {
-      throw new Error(`Servern svarade ${svar.status}`);
-    }
+  if (!svar.ok) {
+    throw new Error(`Servern svarade ${svar.status}`);
+  }
 
-
- return await svar.json();
-
-
+  return await svar.json();
 }
 
 // 2. Hämta menyn från "data/meny.json" med hamtaJson.
 //    Är svaret inte en array: kasta new Error("Menyn hade ett oväntat format").
 export async function hamtaMeny(fetchFn: FetchFn = fetch): Promise<Ratt[]> {
-  // TODO
+  const meny = await hamtaJson("data/meny.json", fetchFn);
+  if (!Array.isArray(meny)) {
+    throw new Error("Menyn hade ett oväntat format");
+  }
+  return meny as Ratt[];
 }
 
 // 3. Hämta aktuellt väder från Open-Meteo.
@@ -40,7 +41,27 @@ export async function hamtaMeny(fetchFn: FetchFn = fetch): Promise<Ratt[]> {
 //    Returnera { temperatur, vindhastighet, kod }.
 //    Saknas data.current: kasta new Error("Oväntat svar från väder-API:et").
 export async function hamtaVader(lat: number, lon: number, fetchFn: FetchFn = fetch): Promise<Vader> {
-  // TODO
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m&timezone=auto`;
+  const data = await hamtaJson(url, fetchFn);
+  if (typeof data !== "object" || data === null) {
+    throw new Error("Oväntat svar från väder-API:et");
+  }
+  if (!("current" in data)) {
+    throw new Error("Oväntat svar från väder-API:et");
+  }
+
+  const current = data.current;
+  if (typeof current !== "object" || current === null) {
+    throw new Error("Oväntat svar från väder-API:et");
+  }
+  // current är ett objekt med strängar som nycklar och alla värden är unknown
+  const weather = current as Record<string, unknown>;
+  // Vi förväntar oss att dessa värden är numbers
+  if (typeof weather.temperature_2m !== "number" || typeof weather.wind_speed_10m !== "number" || typeof weather.weather_code !== "number") {
+    throw new Error("Oväntat svar från väder-API:et");
+  }
+
+  return { temperatur: weather.temperature_2m, vindhastighet: weather.wind_speed_10m, kod: weather.weather_code };
 }
 
 // 4. Översätt en väderkod (WMO) till svensk text:
@@ -48,5 +69,5 @@ export async function hamtaVader(lat: number, lon: number, fetchFn: FetchFn = fe
 //    61-67 "regn", 71-77 "snö", 80-82 "regnskurar", 85-86 "snöbyar", 95-99 "åska".
 //    Allt annat: "okänt väder".
 export function tolkaVaderkod(kod: number): string {
-  // TODO
+  
 }
