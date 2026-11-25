@@ -11,7 +11,21 @@ import type { Ratt, Vader, FetchFn } from "./typer";
 //    - Annars: returnera await svar.json().
 //    Tips: fetch kastar INTE fel för 404 eller 500. Du måste själv kolla svar.ok.
 export async function hamtaJson(url: string, fetchFn: FetchFn = fetch): Promise<unknown> {
-  // TODO
+  let svar: Response;
+
+  try {
+    svar = await fetchFn(url);
+  } catch (fel) {
+      throw new Error("Kunde inte nå servern. Kontrollera din anslutning.");
+  }
+if (!svar.ok) {
+      throw new Error(`Servern svarade ${svar.status}`);
+    }
+
+
+ return await svar.json();
+
+
 }
 
 // 2. Hämta menyn från "data/meny.json" med hamtaJson.
