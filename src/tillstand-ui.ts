@@ -1,7 +1,6 @@
 import { tolkaVaderkod } from "./api";
-import type { Vader } from "./typer";
+import type { Vader, Alternativ } from "./typer";
 // Dag 8: visa tillstånden i sidan.
-
 // Skriver ut rätt sak i container beroende på tillstånd.
 //   { typ: "laddar" }                 -> <p class="laddar" role="status">Laddar...</p>
 //   { typ: "tomt" }                   -> <p class="tom">Inga rätter hittades.</p>

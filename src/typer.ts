@@ -45,3 +45,8 @@ export interface Vader {
   vindhastighet: number;
   kod: number;
 }
+
+export type Alternativ<K extends { typ: "klar" }> = {
+  vidForsokIgen: () => void;
+  visaKlar: (container: HTMLElement, tillstand: K) => void;
+};

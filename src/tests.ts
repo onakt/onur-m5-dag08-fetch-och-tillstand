@@ -135,7 +135,7 @@ test("visaTillstand: klar anropar visaKlar med container och tillstånd", () => 
   const c = ny();
   let fick = undefined as [HTMLElement, unknown] | undefined;
   const t = { typ: "klar" as const, ratter: [1, 2] };
-  visaTillstand(c, t, { visaKlar: (cont, tillstand) => { fick = [cont, tillstand]; } });
+  visaTillstand(c, t, { visaKlar: (cont: HTMLElement, tillstand: unknown) => { fick = [cont, tillstand]; } });
   assertEqual(fick?.[0] === c, true);
   assertEqual(fick?.[1], t);
   assertEqual(c.textContent, "");
